@@ -1,0 +1,58 @@
+<h2>Selecione seu Equipamento Preferido:</h2>
+<ul>
+
+    <li><label><input class="equipment" type="radio" name="equipment" value="Fogao"> Fogao</label></li>
+    <li><label><input class="equipment" type="radio" name="equipment" value="Lavadora"> Lavadora</label></li>
+    <li><label><input class="equipment" type="radio" name="equipment" value="Geladeira"> Geladeira</label></li>
+
+
+</ul>
+
+<button type="button" class="voteButton">
+    Votar!
+</button>
+
+
+<div class="results">
+
+</div>
+
+
+<script>
+
+    $(document).ready(function(){
+
+        $(".voteButton").click(function(){
+
+            $.ajax({
+                type: 'POST',
+                url: '/desktopmodules/WebApi/api/Survey/Vote',
+                data: JSON.stringify ({ vote: $(".equipment:checked").val() }),
+                success: function(data) { 
+                    var votingResults = JSON.parse(data);
+                    var voteResultHTML = "<p><b>$0</b>: $1</p>"
+                    
+                    $(".results").html("<h2>Resultados</h2>");
+
+                    $(votingResults).each(function(i, obj){                                       
+                        $(".results").append(
+                            voteResultHTML
+                                .replace("$0", obj.Equipment)
+                                .replace("$1", obj.Votes));
+                    })
+
+                },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+
+
+        });
+
+
+
+
+
+    })
+
+</script>
